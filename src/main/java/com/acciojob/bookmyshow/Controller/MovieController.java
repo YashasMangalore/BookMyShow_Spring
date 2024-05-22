@@ -1,6 +1,5 @@
 package com.acciojob.bookmyshow.Controller;
 
-import com.acciojob.bookmyshow.Models.Movie;
 import com.acciojob.bookmyshow.Requests.AddMovieRequest;
 import com.acciojob.bookmyshow.Requests.UpdateMovieRequest;
 import com.acciojob.bookmyshow.Service.MovieService;

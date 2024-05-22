@@ -6,24 +6,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-@Table(name="theatres")
+@Table(name="user")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Theatre
+@Builder
+public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer theatreId;
-    @OneToMany(mappedBy = "theatre",cascade = CascadeType.ALL)
-    private List<TheatreSeat> theatreSeatList=new ArrayList<>();
+    private Integer userId;
 
-    private Integer noOfScreens;
     private String name;
-    private String address;
+    private String mobileNo;
+    private String emailId;
+    private Integer age;
 }
