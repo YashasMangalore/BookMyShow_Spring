@@ -18,10 +18,8 @@ public class TheatreSeat
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer theatreSeatId;
-
     @Enumerated(value=EnumType.STRING)
     private SeatType seatType;
-
     @JoinColumn
     @ManyToOne
     private Theatre theatre;//always join in child

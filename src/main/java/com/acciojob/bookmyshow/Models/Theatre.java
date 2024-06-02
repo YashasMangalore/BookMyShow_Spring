@@ -24,6 +24,6 @@ public class Theatre
     private List<TheatreSeat> theatreSeatList=new ArrayList<>();
 
     private Integer noOfScreens;
-    private String name;
-    private String address;
+    private String theatreName;
+    private String city;
 }

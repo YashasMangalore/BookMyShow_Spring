@@ -26,5 +26,5 @@ public class ShowSeat
 
     private String seatNo;
     private Boolean isBooked;
-    private Boolean isFoodAttached;
+//    private Boolean isFoodAttached;
 }

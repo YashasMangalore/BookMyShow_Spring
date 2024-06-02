@@ -6,6 +6,6 @@ import lombok.Data;
 public class AddTheatreRequest
 {
     private Integer noOfScreens;
-    private String name;
-    private String address;
+    private String theatreName;
+    private String city;
 }

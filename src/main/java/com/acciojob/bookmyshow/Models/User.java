@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="user")
+@Table(name="users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,9 +17,11 @@ public class User
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+    @Column(unique = true)
+    private String mobileNo;
+    @Column(unique = true)
+    private String emailId;
 
     private String name;
-    private String mobileNo;
-    private String emailId;
     private Integer age;
 }

@@ -20,10 +20,12 @@ public class Ticket
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String ticketId;
+    @Column(unique = true)
+    private String movieName;
 
     private String bookedSeats;
-    private String movieName;
     private String theatreName;
+    private Integer screenNumber;
     private LocalDate showDate;
     private LocalTime showTime;
     private Integer totalAmount;

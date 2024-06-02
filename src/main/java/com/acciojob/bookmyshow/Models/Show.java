@@ -34,6 +34,7 @@ public class Show
 
     private LocalDate showDate;
     private LocalTime showTime;
+    private Integer screenNumber;
     private Integer classicSeatPrice;
     private Integer premiumSeatPrice;
 }

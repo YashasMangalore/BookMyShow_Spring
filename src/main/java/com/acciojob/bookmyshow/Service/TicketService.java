@@ -1,21 +1,16 @@
 package com.acciojob.bookmyshow.Service;
 
 import com.acciojob.bookmyshow.Enums.SeatType;
-import com.acciojob.bookmyshow.Models.Show;
-import com.acciojob.bookmyshow.Models.ShowSeat;
-import com.acciojob.bookmyshow.Models.Ticket;
-import com.acciojob.bookmyshow.Models.User;
-import com.acciojob.bookmyshow.Repository.ShowRepository;
-import com.acciojob.bookmyshow.Repository.ShowSeatRepository;
-import com.acciojob.bookmyshow.Repository.TicketRepository;
-import com.acciojob.bookmyshow.Repository.UserRepository;
+import com.acciojob.bookmyshow.Exceptions.TicketServiceException;
+import com.acciojob.bookmyshow.Models.*;
+import com.acciojob.bookmyshow.Repository.*;
 import com.acciojob.bookmyshow.Requests.BookTicketRequest;
 import com.acciojob.bookmyshow.Responses.TicketResponse;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService
@@ -29,64 +24,116 @@ public class TicketService
     @Autowired
     private TicketRepository ticketRepository;
 
-    public String bookTicket(BookTicketRequest bookTicketRequest)
+    public String bookTicket(BookTicketRequest bookTicketRequest) throws Exception
     {
-        //1. find show entity
-        Show show=showRepository.findById(bookTicketRequest.getShowId()).get();
-        //2 find user entity
-        User user=userRepository.findById(bookTicketRequest.getUserId()).get();
-        //3 mark as booked and calculate total amount
-        Integer totalAmount=0;
-        List<ShowSeat> showSeatList=show.getShowSeatList();
-
-        for(ShowSeat showSeat:showSeatList)
+        try
         {
-            String seatNo=showSeat.getSeatNo();
-            if(bookTicketRequest.getRequestedSeats().contains(seatNo))
-            {
-                showSeat.setIsBooked(Boolean.TRUE);
+            //1. find show entity
+            Show show = showRepository.findById(bookTicketRequest.getShowId())
+                    .orElseThrow(() -> new TicketServiceException("Show not found with ID: " + bookTicketRequest.getShowId()));
+            //2 find user entity
+            User user = userRepository.findById(bookTicketRequest.getUserId())
+                    .orElseThrow(() -> new TicketServiceException("User not found with ID: " + bookTicketRequest.getUserId()));
+            //3 mark as booked and calculate total amount
+            int totalAmount = 0;
+            List<ShowSeat> showSeatList = show.getShowSeatList();
 
-                if(showSeat.getSeatType().equals(SeatType.CLASSIC))
+            for (ShowSeat showSeat : showSeatList)
+            {
+                String seatNo = showSeat.getSeatNo();
+                if (bookTicketRequest.getRequestedSeats().contains(seatNo))
                 {
-                    totalAmount=totalAmount+show.getClassicSeatPrice();
-                }
-                else
-                {
-                    totalAmount=totalAmount+show.getPremiumSeatPrice();
+                    showSeat.setIsBooked(Boolean.TRUE);
+
+                    if (showSeat.getSeatType().equals(SeatType.CLASSIC))
+                    {
+                        totalAmount = totalAmount + show.getClassicSeatPrice();
+                    }
+                    else
+                    {
+                        totalAmount = totalAmount + show.getPremiumSeatPrice();
+                    }
                 }
             }
-        }
-        //4 create ticket entity and set attributes
-        Ticket ticket=Ticket.builder()
-                .showTime(show.getShowTime())
-                .showDate(show.getShowDate())
-                .movieName(show.getMovie().getMovieName())
-                .theatreName(show.getTheatre().getName())
-                .bookedSeats(bookTicketRequest.getRequestedSeats().toString())
-                .totalAmount(totalAmount)
-                .show(show)
-                .user(user)
-                .build();
+            //4 create ticket entity and set attributes
+            Ticket ticket = Ticket.builder()
+                    .showTime(show.getShowTime())
+                    .showDate(show.getShowDate())
+                    .movieName(show.getMovie().getMovieName())
+                    .theatreName(show.getTheatre().getTheatreName())
+                    .screenNumber(show.getScreenNumber())
+                    .bookedSeats(bookTicketRequest.getRequestedSeats().toString())
+                    .totalAmount(totalAmount)
+                    .show(show)
+                    .user(user)
+                    .build();
 
-        //5 save and return
-        showSeatRepository.saveAll(showSeatList);
-        ticket= ticketRepository.save(ticket);
-        return "The ticket has been generated with ticket-id: "+ticket.getTicketId();
+            //5 save and return
+            showSeatRepository.saveAll(showSeatList);
+            ticket = ticketRepository.save(ticket);
+            return "The ticket has been generated with ticket-id: " + ticket.getTicketId();
+        }
+        catch(TicketServiceException e)
+        {
+            throw new TicketServiceException("Failed to add theatre." + e.getMessage());
+        }
     }
 
-    public TicketResponse generateTicket(String ticketId)
+    public TicketResponse generateTicket(String ticketId) throws Exception
     {
-        Ticket ticket=ticketRepository.findById(ticketId).get();
-        //entity needs to be converted to responses
-        TicketResponse ticketResponse=TicketResponse.builder()
-                .bookedSeats(ticket.getBookedSeats())
-                .movieName(ticket.getMovieName())
-                .showDate(ticket.getShowDate())
-                .showTime(ticket.getShowTime())
-                .theatreName(ticket.getTheatreName())
-                .totalAmount(ticket.getTotalAmount())
-                .build();
+        try
+        {
+            Ticket ticket = ticketRepository.findById(ticketId)
+                    .orElseThrow(() -> new TicketServiceException("Ticket not found with ID: " + ticketId));
+            //entity needs to be converted to responses
+            TicketResponse ticketResponse = TicketResponse.builder()
+                    .bookedSeats(ticket.getBookedSeats())
+                    .movieName(ticket.getMovieName())
+                    .showDate(ticket.getShowDate())
+                    .showTime(ticket.getShowTime())
+                    .theatreName(ticket.getTheatreName())
+                    .screenNumber(ticket.getScreenNumber())
+                    .totalAmount(ticket.getTotalAmount())
+                    .build();
 
-        return ticketResponse;
+            return ticketResponse;
+        }
+        catch(TicketServiceException e)
+        {
+            throw new TicketServiceException("Failed to add theatre." + e.getMessage());
+        }
+    }
+
+    public String cancelTicket(String ticketId)throws Exception
+    {
+        try
+        {
+            Optional<Ticket> ticketOpt = ticketRepository.findById(ticketId);
+            if (ticketOpt.isEmpty())
+            {
+                throw new TicketServiceException("Ticket not found");
+            }
+            Ticket ticket = ticketOpt.get();
+
+            // Update seat availability
+            List<String> bookedSeats = List.of(ticket.getBookedSeats().split(", "));
+            List<ShowSeat> showSeatList = ticket.getShow().getShowSeatList();
+            for (ShowSeat showSeat : showSeatList)
+            {
+                if (bookedSeats.contains(showSeat.getSeatNo()))
+                {
+                    showSeat.setIsBooked(Boolean.FALSE);
+                }
+            }
+            // Save the updated seats
+            showSeatRepository.saveAll(showSeatList);
+            // Delete the ticket
+            ticketRepository.delete(ticket);
+            return "The ticket with ticket-ID: " + ticketId + " has been successfully canceled";
+        }
+        catch(TicketServiceException e)
+        {
+            throw new TicketServiceException("Failed to add theatre." + e.getMessage());
+        }
     }
 }
