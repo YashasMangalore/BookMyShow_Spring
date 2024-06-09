@@ -148,19 +148,19 @@ public class UserService
             {
                 throw new UserServiceException("User not found.");
             }
-            if (user.getAge() != null)
+            if (userRequest.getAge() != null)
             {
                 user.setAge(userRequest.getAge());
             }
-            if (user.getName() != null)
+            if (userRequest.getName() != null)
             {
                 user.setName(userRequest.getName());
             }
-            if (user.getEmailId() != null)
+            if (userRequest.getEmailId() != null)
             {
                 user.setEmailId(userRequest.getEmailId());
             }
-            if (user.getMobileNo() != null)
+            if (userRequest.getMobileNo() != null)
             {
                 user.setMobileNo(userRequest.getMobileNo());
             }
