@@ -36,7 +36,7 @@ Make sure you have the following installed:
 ### Clone the Repository
 
 ```
-git clone https://github.com/your-username/bookMyShowBackend.git
+git clone https://github.com/your-username/bookMyShow_Spring.git
 cd bookMyShow_Spring
 ```
 
@@ -330,3 +330,6 @@ The application uses JPA and Hibernate to manage the database schema. Tables inc
 - TheaterSeat - Stores theater seats
 - Ticket - Stores information of tickets
 - User - Stores user information
+
+##
+This README.md file provides an overview of the BookMyShow_Spring project, detailing its features, technologies used, and instructions for setting up and running the application.
