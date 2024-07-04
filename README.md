@@ -1,3 +1,45 @@
+# BookMyShowBackend
+
+## Project Description
+
+BookMyShowBackend is a Spring Boot application designed to manage the backend operations for a movie booking platform. The application integrates with Swagger UI for API documentation and testing, and includes email functionality for notifications and confirmations. MySQL is used as the database, with JPA and Hibernate handling data persistence.
+
+## Features
+
+- Movie and show management
+- Booking management
+- Integration with Swagger UI for API documentation
+- Email notifications for booking confirmations
+- Data persistence using JPA and Hibernate
+- MySQL as the database
+
+## Technologies Used
+
+- Spring Boot
+- Spring Data JPA
+- Hibernate
+- MySQL
+- Swagger UI
+- JavaMailSender (for email integration)
+
+## Prerequisites
+
+Make sure you have the following installed:
+
+- Java 11 or higher
+- Maven
+- MySQL
+- Postman (for testing API endpoints easily)
+
+## Getting Started
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/your-username/bookMyShowBackend.git
+cd bookMyShowBackend
+
+
 # API Documentation
 
 ## User Controller
